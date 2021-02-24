@@ -2,6 +2,7 @@
 
 
 #include "MovingPlatform.h"
+#include "Math/Vector.h"
 
 #include <Actor.h>
 
@@ -18,6 +19,9 @@ AMovingPlatform::AMovingPlatform()
 void AMovingPlatform::BeginPlay()
 {
 	Super::BeginPlay();
+
+	StartingLocation = GetActorLocation();
+	GlobalTarget = GetTransform().TransformPosition(TargetLocation);
 }
 
 void AMovingPlatform::Tick(float DeltaSeconds)
@@ -26,11 +30,24 @@ void AMovingPlatform::Tick(float DeltaSeconds)
 
 	if(HasAuthority())
 	{
-		FVector ActorLocation = GetActorLocation();
-        
-        ActorLocation += FVector(movementSpeed * DeltaSeconds, 0, 0);
-
-		SetActorLocation(ActorLocation);
+		/*FVector ActorLocation = GetActorLocation();
+        ActorLocation += FVector(movementSpeed * DeltaSeconds, 0, 0);*/
+		
+		FVector CurrentLocation = GetActorLocation();
+		float CurrentLength = (CurrentLocation - StartingLocation).Size();
+		float MaxLength = (GlobalTarget - StartingLocation).Size();
+		
+		if(CurrentLength >= MaxLength)
+		{
+			FVector Swap = StartingLocation;
+			StartingLocation = GlobalTarget;
+			GlobalTarget = Swap;
+		}
+		
+		FVector Direction = (GlobalTarget - CurrentLocation).GetSafeNormal();
+		CurrentLocation += MovementSpeed * DeltaSeconds * Direction;
+		
+		SetActorLocation(CurrentLocation);
 	}
 }
 

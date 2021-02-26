@@ -21,6 +21,10 @@ public:
 	
 	virtual void Tick(float DeltaSeconds) override;
 
+	void AddActiveTrigger();
+
+	void RemoveActiveTrigger();
+
 private:
 	UPROPERTY(EditAnywhere)
 	float MovementSpeed = 10;
@@ -30,4 +34,7 @@ private:
 
 	FVector StartingLocation;
 	FVector GlobalTarget;
+
+	UPROPERTY(EditAnywhere)
+	int CountActiveTriggers = 1;
 };

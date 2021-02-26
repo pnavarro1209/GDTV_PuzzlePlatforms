@@ -6,6 +6,8 @@
 
 #include <Actor.h>
 
+#include "Algo/Count.h"
+
 AMovingPlatform::AMovingPlatform()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -28,27 +30,38 @@ void AMovingPlatform::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(HasAuthority())
+	if(CountActiveTriggers >0)
 	{
-		/*FVector ActorLocation = GetActorLocation();
-        ActorLocation += FVector(movementSpeed * DeltaSeconds, 0, 0);*/
-		
-		FVector CurrentLocation = GetActorLocation();
-		float CurrentLength = (CurrentLocation - StartingLocation).Size();
-		float MaxLength = (GlobalTarget - StartingLocation).Size();
-		
-		if(CurrentLength >= MaxLength)
-		{
-			FVector Swap = StartingLocation;
-			StartingLocation = GlobalTarget;
-			GlobalTarget = Swap;
-		}
-		
-		FVector Direction = (GlobalTarget - CurrentLocation).GetSafeNormal();
-		CurrentLocation += MovementSpeed * DeltaSeconds * Direction;
-		
-		SetActorLocation(CurrentLocation);
+		if(HasAuthority())
+        	{
+        		FVector CurrentLocation = GetActorLocation();
+        		float CurrentLength = (CurrentLocation - StartingLocation).Size();
+        		float MaxLength = (GlobalTarget - StartingLocation).Size();
+        		
+        		if(CurrentLength >= MaxLength)
+        		{
+        			FVector Swap = StartingLocation;
+        			StartingLocation = GlobalTarget;
+        			GlobalTarget = Swap;
+        		}
+        		
+        		FVector Direction = (GlobalTarget - CurrentLocation).GetSafeNormal();
+        		CurrentLocation += MovementSpeed * DeltaSeconds * Direction;
+        		
+        		SetActorLocation(CurrentLocation);
+        	}
 	}
+	
+}
+
+void AMovingPlatform::AddActiveTrigger()
+{
+	CountActiveTriggers++;
+}
+
+void AMovingPlatform::RemoveActiveTrigger()
+{
+	CountActiveTriggers--;
 }
 
 

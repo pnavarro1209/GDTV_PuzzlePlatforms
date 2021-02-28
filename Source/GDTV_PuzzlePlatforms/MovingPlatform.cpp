@@ -30,7 +30,7 @@ void AMovingPlatform::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if(CountActiveTriggers >0)
+	if(CountActiveTriggers > 0)
 	{
 		if(HasAuthority())
         	{

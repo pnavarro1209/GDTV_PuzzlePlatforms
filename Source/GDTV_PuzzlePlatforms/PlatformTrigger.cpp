@@ -4,6 +4,7 @@
 #include "PlatformTrigger.h"
 
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlatformTrigger::APlatformTrigger()
@@ -13,13 +14,21 @@ APlatformTrigger::APlatformTrigger()
 
 	TriggerVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Box"));
 	if(!ensure(TriggerVolume != nullptr)) return;
-	RootComponent = TriggerVolume;
+	SetRootComponent(TriggerVolume);
+
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button Default Mesh"));
+	Mesh->SetupAttachment(TriggerVolume);
 }
 
 // Called when the game starts or when spawned
 void APlatformTrigger::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void APlatformTrigger::SwapMesh(UStaticMesh* NewMesh)
+{
+	Mesh->SetStaticMesh(NewMesh);
 }
 
 // Called every frame
@@ -35,6 +44,10 @@ void APlatformTrigger::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		Platform->AddActiveTrigger();
 	}
+	
+	SwapMesh(ActiveMesh);
+
+	UGameplayStatics::PlaySoundAtLocation(this, TriggeredSound, GetActorLocation(), GetActorRotation());
 }
 
 void APlatformTrigger::NotifyActorEndOverlap(AActor* OtherActor)
@@ -44,6 +57,8 @@ void APlatformTrigger::NotifyActorEndOverlap(AActor* OtherActor)
 	{
 		Platform->RemoveActiveTrigger();
 	}
+	
+	SwapMesh(InactiveMesh);
 }
 
 

@@ -34,6 +34,20 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	UBoxComponent* TriggerVolume;
 
+	UPROPERTY(EditDefaultsOnly)
+	UStaticMeshComponent* Mesh;
+
 	UPROPERTY(EditAnywhere)
 	TArray<class AMovingPlatform*> PlatformsToTrigger;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMesh* InactiveMesh;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMesh* ActiveMesh;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* TriggeredSound;
+
+	void SwapMesh(UStaticMesh* NewMesh);
 };

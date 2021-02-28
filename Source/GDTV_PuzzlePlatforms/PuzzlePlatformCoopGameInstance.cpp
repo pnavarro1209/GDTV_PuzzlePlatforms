@@ -27,7 +27,7 @@ void UPuzzlePlatformCoopGameInstance::Host()
 
 	if(!ensure(World != nullptr)) return;
 
-	World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
+	World->ServerTravel("/Game/Maps/Tower?listen");
 }
 
 void UPuzzlePlatformCoopGameInstance::Join(const FString& Address)

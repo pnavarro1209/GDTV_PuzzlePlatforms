@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "UI/MenuInterface.h"
 #include "PuzzlePlatformCoopGameInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GDTV_PUZZLEPLATFORMS_API UPuzzlePlatformCoopGameInstance : public UGameInstance
+class GDTV_PUZZLEPLATFORMS_API UPuzzlePlatformCoopGameInstance : public UGameInstance, public IMenuInterface
 {
 	GENERATED_BODY()
 
@@ -28,5 +29,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LoadMainMenu();
 
+private:
 	TSubclassOf<class UUserWidget> MenuClass;
+
+	class UMainMenu* Menu;
 };

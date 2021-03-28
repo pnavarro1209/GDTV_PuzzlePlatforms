@@ -4,6 +4,7 @@
 #include "PuzzlePlatformCoopGameInstance.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/MainMenu.h"
 
 #include <dbgeng.h>
 
@@ -21,6 +22,11 @@ void UPuzzlePlatformCoopGameInstance::Init()
 
 void UPuzzlePlatformCoopGameInstance::Host()
 {
+	if(Menu != nullptr)
+	{
+		Menu->TearDown();
+	}
+	
 	UEngine* Engine = GetEngine();
 
 	if(!ensure(Engine != nullptr)) return;
@@ -36,6 +42,11 @@ void UPuzzlePlatformCoopGameInstance::Host()
 
 void UPuzzlePlatformCoopGameInstance::Join(const FString& Address)
 {
+	if(Menu != nullptr)
+	{
+		Menu->TearDown();
+	}
+	
 	UEngine* Engine = GetEngine();
 
 	if(!ensure(Engine != nullptr)) return;
@@ -55,22 +66,10 @@ void UPuzzlePlatformCoopGameInstance::Join(const FString& Address)
 
 void UPuzzlePlatformCoopGameInstance::LoadMainMenu()
 {
-	UUserWidget* Menu = CreateWidget(this, MenuClass);
+	Menu = CreateWidget<UMainMenu>(this, MenuClass);
 	if(!ensure(Menu != nullptr)) return;
-	
-	Menu->AddToViewport();
-
-	APlayerController* PlayerController = GetFirstLocalPlayerController();
-	if(!ensure(PlayerController != nullptr)) return;
-
-	FInputModeUIOnly InputMode;
-
-	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-	InputMode.SetWidgetToFocus(Menu->TakeWidget());
-	
-	PlayerController->SetInputMode(InputMode);
-	PlayerController->SetShowMouseCursor(true);
-
+	Menu->SetupMainMenu();
+	Menu->SetMenuInterface(this);
 }
 
 

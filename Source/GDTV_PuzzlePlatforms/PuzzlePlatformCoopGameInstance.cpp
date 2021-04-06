@@ -8,11 +8,17 @@
 
 #include <dbgeng.h>
 
+#include "UI/InGameMenu.h"
+
 UPuzzlePlatformCoopGameInstance::UPuzzlePlatformCoopGameInstance()
 {
 	ConstructorHelpers::FClassFinder<UUserWidget> MenuBP(TEXT("/Game/Blueprints/UI/WBP_MainMenu"));
 
 	MenuClass = MenuBP.Class;
+
+	ConstructorHelpers::FClassFinder<UUserWidget> InGameMenuBP(TEXT("/Game/Blueprints/UI/WBP_GameMenu"));
+
+	InGameMenuClass = InGameMenuBP.Class;
 }
 
 void UPuzzlePlatformCoopGameInstance::Init()
@@ -66,10 +72,44 @@ void UPuzzlePlatformCoopGameInstance::Join(const FString& Address)
 
 void UPuzzlePlatformCoopGameInstance::LoadMainMenu()
 {
-	Menu = CreateWidget<UMainMenu>(this, MenuClass);
+	Menu = CreateWidget<UMenuWidget>(this, MenuClass);
 	if(!ensure(Menu != nullptr)) return;
-	Menu->SetupMainMenu();
+	Menu->Setup();
 	Menu->SetMenuInterface(this);
+}
+
+void UPuzzlePlatformCoopGameInstance::LoadInGameMenu()
+{
+	InGameMenu = CreateWidget<UMenuWidget>(this, InGameMenuClass);
+	if(!ensure(InGameMenu != nullptr)) return;
+	InGameMenu->Setup();
+	InGameMenu->SetMenuInterface(this);
+}
+
+void UPuzzlePlatformCoopGameInstance::ReturnToLobby()
+{
+	UWorld* World = GetWorld();
+
+	if(!ensure(World != nullptr)) return;
+
+	APlayerController* PlayerController = GetFirstLocalPlayerController();
+
+	if(!ensure(PlayerController != nullptr)) return;
+
+	PlayerController->ClientTravel("/Game/Maps/Lobby", ETravelType::TRAVEL_Absolute);
+}
+
+void UPuzzlePlatformCoopGameInstance::QuitGame()
+{
+	UWorld* World = GetWorld();
+
+	if(!ensure(World != nullptr)) return;
+
+	APlayerController* PlayerController = GetFirstLocalPlayerController();
+
+	if(!ensure(PlayerController != nullptr)) return;
+
+	PlayerController->ConsoleCommand("quit");
 }
 
 

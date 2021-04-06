@@ -29,8 +29,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LoadMainMenu();
 
+	UFUNCTION(BlueprintCallable)
+	void LoadInGameMenu();
+
+	UFUNCTION()
+	virtual void ReturnToLobby() override;
+
+	virtual void QuitGame() override;
+
 private:
 	TSubclassOf<class UUserWidget> MenuClass;
 
-	class UMainMenu* Menu;
+	class UMenuWidget* Menu;
+
+	TSubclassOf<class UUserWidget> InGameMenuClass;
+
+	class UMenuWidget* InGameMenu;
 };
